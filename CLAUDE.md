@@ -6,6 +6,32 @@ user's own Linux machine. Usually that's an **Ubuntu PC at home behind a
 router**. Read `README.md` for the full picture. This file is the runbook for
 setting it up with the user.
 
+## This installation
+
+The settings are already decided. They're in README.md → **"Our setup"**:
+home Ubuntu PC, domain `chat.mosi-app.com`, DNS for mosi-app.com managed at
+**Cloudflare**, home IP followed by DuckDNS (`mosi-home.duckdns.org`). Use them
+without asking again. The only thing to ask for is the admin email, and the
+installer asks for that itself.
+
+When the user asks you to set things up, follow the runbook below with these
+values. Skip the decisions in steps 1 and 2 that are already made, but **do run
+the checks**, especially:
+- Ports 80/443 are free. Another app runs on this PC; if it uses them, stop and
+  discuss, and don't touch that app.
+- The CGNAT check.
+- The 3 DNS records exist:
+  ```bash
+  for n in chat groups.chat share.chat; do curl -s -H 'accept: application/dns-json' "https://cloudflare-dns.com/dns-query?name=$n.mosi-app.com&type=CNAME"; echo; done
+  ```
+  Each should answer `mosi-home.duckdns.org.`. If they're missing, tell the
+  user to add them in **Cloudflare** (not Squarespace) as **DNS only**
+  (grey cloud), exactly as in README → "Our setup". Wait until they resolve
+  before the user runs the installer.
+
+Then have the user run the install command from README → "Our setup" in their
+own terminal.
+
 ## Rules
 
 - **The user runs `sudo` and anything involving secrets themselves**, in their
@@ -20,8 +46,9 @@ setting it up with the user.
   (`<domain>`, `groups.<domain>`, `share.<domain>`). Never touch the user's
   other records. Chat records must be **DNS only** (Cloudflare grey cloud),
   because Cloudflare's proxy doesn't carry chat or call traffic.
-- **This repo is public.** Don't commit personal values (domains, IPs, emails,
-  tokens) to it.
+- **This repo is public.** The domain and DuckDNS name in "Our setup" are there
+  on purpose. Never commit anything else personal: IP addresses, emails, tokens,
+  or the contents of `/etc/snikket`.
 - Test reachability from **outside** (a phone on mobile data). Many home
   routers can't reach their own public IP from inside ("NAT loopback").
 

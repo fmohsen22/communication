@@ -31,6 +31,37 @@ read [Running on a home PC](#running-on-a-home-pc).
 **Using Claude Code?** Open `claude` in this folder and ask it to set up the
 server. [CLAUDE.md](CLAUDE.md) tells it the steps, checks and rules.
 
+## Our setup
+
+This repo is used for one specific server. These are its settings; use them
+as they are.
+
+| | |
+|---|---|
+| **Server** | Ubuntu PC at home, behind a router. **Another app already runs on this PC; don't touch it.** |
+| **Chat domain** | `chat.mosi-app.com` (accounts will be `name@chat.mosi-app.com`) |
+| **Where mosi-app.com's DNS is managed** | **Cloudflare.** The domain was bought at Squarespace, but its nameservers are Cloudflare's, so records at Squarespace have no effect. |
+| **Following the changing home IP** | DuckDNS name `mosi-home.duckdns.org`, so `SNIKKET_DNS_MODE=duckdns` and `DUCKDNS_NAME=mosi-home` |
+
+**DNS records** (in Cloudflare → mosi-app.com → DNS → Records). All three
+must be **DNS only** (grey cloud), not proxied:
+
+| Type | Name | Target |
+|---|---|---|
+| CNAME | `chat` | `mosi-home.duckdns.org` |
+| CNAME | `groups.chat` | `mosi-home.duckdns.org` |
+| CNAME | `share.chat` | `mosi-home.duckdns.org` |
+
+**Install command.** Run it in your own terminal. It asks for the admin email
+and the DuckDNS token (paste the token there, never into a chat):
+
+```bash
+sudo SNIKKET_DOMAIN=chat.mosi-app.com SNIKKET_DNS_MODE=duckdns DUCKDNS_NAME=mosi-home bash install.sh
+```
+
+When it shows the 3 records and says "Press Enter", they're already in
+Cloudflare, so just press Enter.
+
 ## What's in this repo
 
 | File | What it does |
